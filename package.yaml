@@ -1,0 +1,35 @@
+name: Technomancy
+version: 0.0.1
+
+dependencies:
+  - base
+  - binary
+  - binary-parsers
+  - bytestring
+  - lens
+  - text
+  - template-haskell
+  - utf8-string
+
+library:
+  source-dirs: src
+
+executable:
+  main: Main.hs
+  source-dirs: app
+  dependencies: Technomancy
+
+tests:
+  technomancy-tests:
+    main: Main.hs
+    source-dirs: test
+    dependencies:
+      - Technomancy
+      - QuickCheck
+      - quickcheck-instances
+      - hspec
+
+ghc-options:
+ - -ddump-splices
+ - -ddump-to-file
+ - -dth-dec-file
