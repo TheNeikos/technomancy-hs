@@ -3,13 +3,12 @@ version: 0.0.1
 
 dependencies:
   - base
-  - binary
-  - binary-parsers
-  - bytestring
   - lens
   - text
-  - template-haskell
   - utf8-string
+  - unordered-containers
+  - mtl
+  - hashable
 
 library:
   source-dirs: src
