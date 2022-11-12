@@ -101,8 +101,8 @@ updateGameState (AddPlayer playerid) = players . at playerid ?= defaultPlayer pl
 updateGameState (AddZoneToPlayer playerid zoneid) = players . at playerid . _Just . playerZones . at zoneid ?= Zone []
 updateGameState (AddCardToPlayerZone playerid zoneid card) = modify $ players . ix playerid . playerZones . ix zoneid . zoneCards <>~ [card]
 updateGameState (MoveCardToZone {fromZone = _fromZone, toZone = _toZone, moveCard = _moveCard}) = do
-  cards <- get
-  let card = findElem $ cards ^. getZone _fromZone . zoneCards
+  game <- get
+  let card = findElem $ game ^. getZone _fromZone . zoneCards
   getZone _fromZone . zoneCards %= removeElement ((_moveCard ==) . _cardId)
   case card of
     Just card -> getZone _toZone . zoneCards <>= [card]
