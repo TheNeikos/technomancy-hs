@@ -1,0 +1,71 @@
+-- Initial Game Conditions
+when: GameSetup
+rules: ```
+game.addZone("DrawPile");
+game.addZone("DiscardPile");
+```
+
+-- Initial Player Conditions
+when: PlayerSetup
+rules: ```
+let player = game.getActionPlayer();
+
+let hand = player.addZone("hand");
+let drawPile = game.getZone("DrawPile");
+
+hand.addCards(drawPile.takeTopCards(7));
+```
+
+-- Discard Pile grows
+when: ZoneCardAdded("DiscardPile")
+rules: ```
+let newCard = game.getActionCard();
+
+let curPlayer = game.getCurrentPlayer();
+let hand = curPlayer.getZone("hand");
+let drawPile = game.getZone("DrawPile");
+
+let action = newCard.getProperty("Action");
+
+switch action {
+    "+2" => { hand.addCards(drawPile.takeTopCards(2)); }
+}
+```
+
+-- Initial Card
+when: GameStart
+rules: ```
+let drawPile = game.getZone("DrawPile");
+let discardPile = game.getZone("DiscardPile");
+
+discardPile.addCards(drawPile.takeTopCard());
+```
+
+-- Player Plays game
+when: PlayerAction("PlayCard")
+rules: ```
+if game.getActionPlayer() != game.getCurrentPlayer() {
+    game.cancelAction("It is not your turn");
+}
+
+let discardPile = game.getZone("DiscardPile");
+
+let lastCard = discardPile.getTopCard();
+
+if lastCard == () {
+    game.error("Empty Discard Pile!!");
+}
+
+let inputCard = game.getInputCard("selectedCard");
+
+if lastCard.getProperty("Color") != inputCard.getProperty("Color")
+  || lastCard.getProperty("Number") != inputCard.getProperty("Number") 
+  || !lastCard.getProperty("IsWildcard") {
+    game.cancelAction("Number or color do not match!");
+}
+
+let hand = game.getActionPlayer().getZone("hand");
+
+discardPile.addCards([hand.takeCard(inputCard)]);
+game.nextTurn();
+```
